@@ -1,3 +1,40 @@
+var num = 10;
+console.log(num);
+
+var string = "Jonathan";
+console.log(string);
+
+var bool = true;
+console.log(bool);
+
+var object;
+console.log(object);
+
+object = null;
+console.log(object);
+
+var arr1 = [20,30,40,50,60,70];
+console.log(arr1);
+
+var arr2 = [15, "hello", false, num, "world"];
+console.log(arr2);
+
+console.log("Length of arr1 is: "+ arr1.length);
+console.log(arr1[4]);
+console.log(arr2[2]);
+console.log(arr2[4]);
+
+var arr3 = [[1,3,5,7],[2,4,6,8],[10,20,30,40]];
+console.log(arr3.length);
+console.log(arr3[1][2]);
+console.log(arr3[2][3]);
+
+arr2.push("Adding");
+console.log(arr2);
+
+arr1.pop();
+console.log(arr1);
+
 const Engine = Matter.Engine;
 const World= Matter.World;
 const Bodies = Matter.Bodies;
@@ -7,10 +44,13 @@ var engine, world;
 var box1, pig1,pig3;
 var backgroundImg,platform;
 var bird, slingshot;
+var bgImg;
+
+var score;
 
 
 function preload() {
-    backgroundImg = loadImage("sprites/bg.png");
+    getBgimg();
 }
 
 function setup(){
@@ -41,21 +81,30 @@ function setup(){
 
     //log6 = new Log(230,180,80, PI/2);
     slingshot = new SlingShot(bird.body,{x:200, y:50});
+
+    score = 0;
 }
 
 function draw(){
+    if(backgroundImg){
     background(backgroundImg);
+    }
+    else{
+        background("blue");
+    }
     Engine.update(engine);
     //strokeWeight(4);
     box1.display();
     box2.display();
     ground.display();
     pig1.display();
+    pig1.score();
     log1.display();
 
     box3.display();
     box4.display();
     pig3.display();
+    pig3.score();
     log3.display();
 
     box5.display();
@@ -65,7 +114,13 @@ function draw(){
     bird.display();
     platform.display();
     //log6.display();
-    slingshot.display();    
+    slingshot.display(); 
+
+    fill("white")
+    textSize(25);
+    text("score: "+ score, width-300,50);
+    
+    //getTime();
 }
 
 function mouseDragged(){
@@ -81,4 +136,26 @@ function keyPressed(){
     if(keyCode === 32){
         slingshot.attach(bird.body);
     }
+}
+
+async function getBgimg(){
+
+    var response = await fetch("https://worldtimeapi.org/api/timezone/Asia/Tokyo");
+    var responseJSON = await response.json();
+    //console.log(responseJSON.datetime);
+    var dateTime = responseJSON.datetime;
+    var hour = dateTime.slice(11,13);
+    console.log(hour);
+
+    if(hour>=06 && hour<=19){
+        bgImg = "sprites/bg2.jpg";
+    }
+    else{
+        bgImg = "sprites/bg.png";
+    }
+    backgroundImg = loadImage(bgImg);
+
+    
+
+
 }
